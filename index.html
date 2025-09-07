@@ -8,15 +8,26 @@
 <body>
     <h1>素因数分解ゲーム</h1>
 
-    <p>残り時間: <span id="timer">60</span>秒</p>
-    <p>スコア: <span id="score">0</span></p>
-    <p id="problem">ここに問題が表示されます</p>
+    <div id="homeScreen">
+        <p>難易度を選んでください</p>
+        <button class="difficultyBtn" data-difficulty="easy">簡単</button>
+        <button class="difficultyBtn" data-difficulty="normal">普通</button>
+        <button class="difficultyBtn" data-difficulty="hard">難しい</button>
+        <button class="difficultyBtn" data-difficulty="insane">ゲキムズ</button>
+        <p>選択中の難易度: <span id="selectedDifficulty">未選択</span></p>
+        <button id="startGameBtn">ゲーム開始</button>
+    </div>
 
-    <input type="text" id="answerInput" placeholder="答えを入力 (例: 2*3*5)">
-    <button id="submitButton">判定</button>
-    <button id="skipButton">スキップ</button>
-
-    <p id="result">結果が表示されます</p>
+    <div id="gameArea">
+        <p>残り時間: <span id="timer">60</span>秒</p>
+        <p>スコア: <span id="score">0</span></p>
+        <p id="problem">ここに問題が表示されます</p>
+        <input type="text" id="answerInput" placeholder="答えを入力 (例: 2*3*5)">
+        <button id="submitButton">判定</button>
+        <button id="skipButton">スキップ</button>
+        <p id="result">結果が表示されます</p>
+        <button id="homeBtn">ホームへ戻る</button>
+    </div>
 
     <script src="script.js"></script>
 </body>

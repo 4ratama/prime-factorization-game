@@ -1,0 +1,13 @@
+#gameArea {
+    display: none; /* ゲームエリアは最初は非表示 */
+}
+
+#homeScreen {
+    display: block; /* ホーム画面は最初は表示 */
+}
+
+/* 選択された難易度ボタンの見た目を変える（任意） */
+.difficultyBtn.selected {
+    background-color: #4CAF50; /* 例：緑色 */
+    color: white;
+}
