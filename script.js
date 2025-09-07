@@ -164,3 +164,36 @@ function parseUserInput(inputString) {
 
 // 初期状態ではホーム画面を表示
 showScreen('home');
+// --- キーパッドとEnterキー機能の追加 ---
+
+const keypad = document.getElementById('keypad');
+
+// キーパッドのボタンがクリックされた時の処理
+keypad.addEventListener('click', (event) => {
+    const target = event.target;
+    // クリックされたのがボタンでなければ何もしない
+    if (target.tagName !== 'BUTTON') {
+        return;
+    }
+    // 判定、スキップ、ホームボタンはそれぞれのイベントリスナーで処理
+    if (target.id === 'submitButton' || target.id === 'skipButton' || target.id === 'homeBtn') {
+        return;
+    }
+
+    const value = target.dataset.value;
+    if (value === 'del') {
+        // 最後の1文字を削除
+        answerInput.value = answerInput.value.slice(0, -1);
+    } else if (value) {
+        // ボタンのdata-valueを入力欄に追加
+        answerInput.value += value;
+    }
+});
+
+// 入力欄でEnterキーが押された時の処理
+answerInput.addEventListener('keydown', (event) => {
+    // Enterキーが押されたら判定ボタンをクリック
+    if (event.key === 'Enter') {
+        submitButton.click();
+    }
+});
