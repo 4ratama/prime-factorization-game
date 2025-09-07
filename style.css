@@ -1,13 +1,101 @@
-#gameArea {
-    display: none; /* ゲームエリアは最初は非表示 */
+/* 全体設定 */
+body {
+    font-family: 'Arial', sans-serif; /* 全体のフォントを指定 */
+    background-color: #282c34; /* 背景色を濃いグレーに */
+    color: #f8f8f2; /* 文字色を明るい白に */
+    display: flex; /* flexboxを使って中央寄せ */
+    flex-direction: column; /* 縦方向に要素を並べる */
+    align-items: center; /* 水平方向の中央寄せ */
+    justify-content: center; /* 垂直方向の中央寄せ */
+    min-height: 100vh; /* 画面全体の高さを使う */
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box; /* パディングを含めてサイズ計算 */
 }
 
-#homeScreen {
-    display: block; /* ホーム画面は最初は表示 */
+h1 {
+    color: #61dafb; /* タイトル色をシアンに */
+    margin-bottom: 30px;
+    font-size: 2.5em; /* タイトル文字を大きく */
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* 影をつけて立体感を出す */
 }
 
-/* 選択された難易度ボタンの見た目を変える（任意） */
+p {
+    font-size: 1.1em;
+    margin-bottom: 10px;
+}
+
+/* ボタンの共通スタイル */
+button {
+    background-color: #4CAF50; /* ボタンの背景色（緑） */
+    color: white; /* ボタンの文字色 */
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 5px; /* 角を丸くする */
+    cursor: pointer; /* マウスオーバーでカーソルをポインターに */
+    font-size: 1em;
+    transition: background-color 0.3s ease; /* ホバー時のアニメーション */
+}
+
+button:hover {
+    background-color: #45a049; /* マウスオーバーで少し濃い緑に */
+}
+
+/* 入力欄のスタイル */
+input[type="text"] {
+    padding: 10px;
+    margin: 10px;
+    border: 1px solid #61dafb; /* 枠線をシアンに */
+    border-radius: 5px;
+    background-color: #3a3f4a; /* 入力欄の背景色 */
+    color: #f8f8f2; /* 入力欄の文字色 */
+    font-size: 1em;
+}
+
+/* 難易度ボタンの選択状態 */
 .difficultyBtn.selected {
-    background-color: #4CAF50; /* 例：緑色 */
-    color: white;
+    background-color: #61dafb; /* 選択中の難易度ボタンをシアンに */
+    color: #282c34; /* 文字色を濃いグレーに */
+}
+.difficultyBtn.selected:hover {
+    background-color: #4fb0c9; /* ホバーで少し暗く */
+}
+
+
+/* 結果表示のスタイル */
+#result {
+    font-weight: bold;
+    margin-top: 15px;
+    font-size: 1.2em;
+}
+
+#result[style*="green"] { /* 正解時の色 */
+    color: #4CAF50 !important;
+}
+
+#result[style*="red"] { /* 不正解時の色 */
+    color: #f44336 !important;
+}
+
+#result[style*="blue"] { /* スキップ時の色 */
+    color: #2196F3 !important;
+}
+
+
+/* NEW: 各画面のコンテナに少し余白と背景色を追加 */
+#homeScreen, #gameArea {
+    background-color: #3a3f4a; /* コンテナの背景色 */
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* 影をつけて浮き上がらせる */
+    text-align: center;
+    max-width: 600px;
+    width: 100%;
+    margin-top: 20px;
+}
+
+/* ゲームエリアはJSで制御するため、ここには残しておく */
+#gameArea {
+    display: none;
 }
