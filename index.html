@@ -7,9 +7,14 @@
 </head>
 <body>
     <h1>素因数分解ゲーム</h1>
-    <p>ここに問題が表示されます</p>
-    <input type="text" placeholder="答えを入力">
-    <button>判定</button>
+
+    <p id="problem">ここに問題が表示されます</p>
+
+    <input type="text" id="answerInput" placeholder="答えを入力 (例: 2*3*5)">
+    <button id="submitButton">判定</button>
+    <button id="skipButton">スキップ</button>
+
+    <p id="result">結果が表示されます</p>
 
     <script src="script.js"></script>
 </body>
