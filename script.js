@@ -24,6 +24,7 @@ let timeLeft = 60;
 let timerId;
 let currentDifficulty = null;
 let highScore = 0;
+let currentDifficultySettings; // 現在のゲームの難易度設定を保持
 
 const difficultySettings = {
     easy: { min: 10, max: 100, points: 10, name: "簡単" },
@@ -93,8 +94,16 @@ submitButton.addEventListener('click', () => {
     if (isCorrect) {
         resultElement.textContent = '正解です！';
         resultElement.style.color = 'green';
-        score += difficultySettings[currentDifficulty].points;
+        
+        const basePoints = currentDifficultySettings.points;
+        const problemNumber = correctPrimeFactors.reduce((a, b) => a * b, 1);
+        const bonusPoints = Math.floor(Math.log10(problemNumber)) * 5;
+        score += basePoints + bonusPoints;
         scoreElement.textContent = score;
+
+        currentDifficultySettings.min = Math.floor(currentDifficultySettings.min * 1.1);
+        currentDifficultySettings.max = Math.floor(currentDifficultySettings.max * 1.2);
+        
         generateNewProblem();
     } else {
         resultElement.textContent = '不正解です。もう一度挑戦！';
@@ -133,7 +142,7 @@ answerInput.addEventListener('keydown', (event) => {
 // --- ゲーム本体の関数 ---
 
 function startGame(difficulty) {
-    currentDifficulty = difficulty;
+    currentDifficultySettings = { ...difficultySettings[difficulty] };
     score = 0;
     timeLeft = 60;
     scoreElement.textContent = score;
@@ -169,17 +178,17 @@ function startTimer() {
 }
 
 function generateNewProblem() {
-    const settings = difficultySettings[currentDifficulty];
+    const settings = currentDifficultySettings;
     const range = settings.max - settings.min + 1;
     let num = Math.floor(Math.random() * range) + settings.min;
-    while (getPrimeFactors(num).length <= 1) {
+    while (getPrimeFactors(num).length <= 1 || num > settings.max) {
         num = Math.floor(Math.random() * range) + settings.min;
     }
     problemElement.textContent = `問題: ${num} を素因数分解してください。`;
     answerInput.value = '';
     resultElement.textContent = '';
     correctPrimeFactors = getPrimeFactors(num);
-    console.log(`正解 (${currentDifficulty}):`, correctPrimeFactors.join('*'));
+    console.log(`正解 (Min:${settings.min}, Max:${settings.max}):`, correctPrimeFactors.join('*'));
 }
 
 // --- ヘルパー関数 ---
