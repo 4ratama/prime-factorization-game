@@ -1,70 +1,69 @@
 // HTML要素をJavaScriptで操作できるように取得
-const problemElement = document.getElementById('problem'); // 問題表示エリア
-const answerInput = document.getElementById('answerInput'); // 答えの入力欄
-const submitButton = document.getElementById('submitButton'); // 判定ボタン
-const skipButton = document.getElementById('skipButton'); // スキップボタン
-const resultElement = document.getElementById('result'); // 結果表示エリア
+const problemElement = document.getElementById('problem');
+const answerInput = document.getElementById('answerInput');
+const submitButton = document.getElementById('submitButton');
+const skipButton = document.getElementById('skipButton');
+const resultElement = document.getElementById('result');
+const timerElement = document.getElementById('timer'); // NEW! タイマー表示エリア
+const scoreElement = document.getElementById('score'); // NEW! スコア表示エリア
 
-let currentProblemNumber; // 現在の問題の数字を保持する変数
-let correctPrimeFactors; // 現在の問題の正しい素因数を保持する変数 (例: [2, 3, 5])
+let currentProblemNumber;
+let correctPrimeFactors;
+
+// --- NEW! ゲームの状態に関する変数を追加 ---
+let score = 0; // スコア
+let timeLeft = 60; // 残り時間（秒）
+let timerId; // タイマーを管理するためのID
 
 // --- 素因数分解のヘルパー関数 ---
-// 引数の数値を素因数分解して配列で返す関数
 function getPrimeFactors(num) {
     const factors = [];
-    let divisor = 2; // 2から割り始める
-
+    let divisor = 2;
     while (num > 1) {
-        if (num % divisor === 0) { // 割り切れる場合
-            factors.push(divisor); // 因数として追加
-            num /= divisor; // 割った後の数で更新
+        if (num % divisor === 0) {
+            factors.push(divisor);
+            num /= divisor;
         } else {
-            divisor++; // 次の数で試す
+            divisor++;
         }
     }
-    return factors.sort((a, b) => a - b); // 小さい順にソートして返す
+    return factors.sort((a, b) => a - b);
 }
 
-// ユーザーの入力 (例: "2*3*5") を素因数の配列に変換する関数
 function parseUserInput(inputString) {
-    // "*" で分割し、各要素を数値に変換する。不正な値は取り除く
     const factors = inputString.split('*').map(s => parseInt(s.trim())).filter(n => !isNaN(n) && n > 1);
-    return factors.sort((a, b) => a - b); // 小さい順にソート
+    return factors.sort((a, b) => a - b);
 }
 
 // --- ゲームの機能 ---
 
 // 新しい問題を設定する関数
 function generateNewProblem() {
-    // 簡単レベルとして、今回は10から100までの整数をランダムに生成
     currentProblemNumber = Math.floor(Math.random() * 91) + 10;
-    
-    // 素数や1の場合など、素因数分解できない数字はスキップする（より高度なゲームでは対処が必要）
     while (getPrimeFactors(currentProblemNumber).length <= 1) {
         currentProblemNumber = Math.floor(Math.random() * 91) + 10;
     }
-
     problemElement.textContent = `問題: ${currentProblemNumber} を素因数分解してください。`;
-    answerInput.value = ''; // 入力欄をクリア
-    resultElement.textContent = ''; // 結果表示をクリア
-    
+    answerInput.value = '';
+    resultElement.textContent = '';
     correctPrimeFactors = getPrimeFactors(currentProblemNumber);
-    console.log("正解 (デバッグ用):", correctPrimeFactors.join('*')); // 開発者ツールで正解を確認できるようにしておく
+    console.log("正解 (デバッグ用):", correctPrimeFactors.join('*'));
 }
 
 // 判定ボタンがクリックされた時の処理
 submitButton.addEventListener('click', () => {
     const userAnswer = parseUserInput(answerInput.value);
-    
-    // 正しい素因数とユーザーの入力を比較
-    // 配列の要素数が同じ かつ 各要素が順に同じ なら正解
-    const isCorrect = userAnswer.length === correctPrimeFactors.length && 
+    const isCorrect = userAnswer.length === correctPrimeFactors.length &&
                       userAnswer.every((val, index) => val === correctPrimeFactors[index]);
 
     if (isCorrect) {
         resultElement.textContent = '正解です！';
         resultElement.style.color = 'green';
-        // ここにポイント加算や次の問題への移行処理を追加
+        
+        // --- NEW! スコアを加算して表示を更新 ---
+        score += 10; // 正解したら10点加算
+        scoreElement.textContent = score;
+
         generateNewProblem(); // 次の問題へ
     } else {
         resultElement.textContent = '不正解です。もう一度挑戦！';
@@ -80,5 +79,40 @@ skipButton.addEventListener('click', () => {
 });
 
 
-// ページが読み込まれたときに最初の問題を表示
-generateNewProblem();
+// --- NEW! タイマーを開始する関数 ---
+function startTimer() {
+    // 1秒ごと（1000ミリ秒）に中の処理を繰り返す
+    timerId = setInterval(() => {
+        timeLeft--; // 時間を1減らす
+        timerElement.textContent = timeLeft; // 画面に表示
+
+        // 時間が0になったら
+        if (timeLeft <= 0) {
+            clearInterval(timerId); // タイマーを停止
+            problemElement.textContent = "時間切れ！";
+            // ボタンや入力欄を無効化する
+            answerInput.disabled = true;
+            submitButton.disabled = true;
+            skipButton.disabled = true;
+        }
+    }, 1000);
+}
+
+// --- NEW! ゲームを開始する関数 ---
+function startGame() {
+    score = 0;
+    timeLeft = 60;
+    scoreElement.textContent = score;
+    timerElement.textContent = timeLeft;
+    
+    // ボタンや入力欄を有効化する（時間切れ後のリスタート用）
+    answerInput.disabled = false;
+    submitButton.disabled = false;
+    skipButton.disabled = false;
+
+    generateNewProblem();
+    startTimer();
+}
+
+// ページが読み込まれたときにゲームを開始
+startGame();
